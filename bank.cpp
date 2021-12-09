@@ -7,7 +7,7 @@
 #include <sstream>
 #include <cassert>
 
-Bank::Bank() : openAccount{nullptr} {}
+Bank::Bank() {}
 
 void Bank::processTransactionFile(const string &fileName) {
   //declare a file name 
@@ -26,48 +26,24 @@ void Bank::processTransactionFile(const string &fileName) {
        //add each line to queue
        transactions.push(line);
     }
-
   }
 
   //after queue has every information from the file 
   //then we can process each line/transaction  
-  // while (!transactions.empty()) {
-  //   //get each line out and pop it out   
-  //   string transaction = transactions.front();
-  //   //cout << "processTransactionFile: loop" << endl;
-  //   transactions.pop();
-  //   processTransactions(transaction); //call this method to process each transaction
-  // }
-
-   string transaction = transactions.front();
-    //cout << "processTransactionFile: loop" << endl;
+  while (!transactions.empty()) {
+    //get each line out and pop it out   
+    string transaction = transactions.front();
     transactions.pop();
     processTransactions(transaction); //call this method to process each transaction
-
-    //  transaction = transactions.front();
-    // //cout << "processTransactionFile: loop" << endl;
-    // transactions.pop();
-    // processTransactions(transaction); //call this method to process each transaction
-
-    for (int i = 1; i <= 17; i++) {
-      transaction = transactions.front();
-      transactions.pop();
-      processTransactions(transaction);
-    }
+  }
 
   cout << endl;
-  cout <<"a new one" << endl;
   accounts.display();
   //when queueis empty then close file 
   myFile.close();
 }
 
 void Bank::processTransactions(string transaction) {
-  //assuming format for each line is like 
-  // D/W 10010 542
-  // O Cash Johnny 1001
-  // T 10017 54 10015
-  // H 1001
   //using stringstring to get each word/number from a string 
   stringstream ss(transaction);
   char typeOfFund;
@@ -79,14 +55,9 @@ void Bank::processTransactions(string transaction) {
     string firstName, lastName; // get the last name and first name 
     int idNum; //get the ID number 
     ss >> firstName >> lastName >> idNum; // input the value to the variables 
-    Account a(firstName, lastName, idNum);
-    openAccount = &a; // create a new account 
-    
+    Account *openAccount = new Account(firstName, lastName, idNum);
     bool exist = accounts.insert(openAccount); //insert the account to the tree 
     
-    //cout << "check exist in 'O': " << boolalpha << exist << endl;
-
-    //accounts.display();
     //if failed insertion then retrun error 
     if (!exist) {
       cerr << "ERROR: Account " << idNum << " is already open. Transaction refused." << endl;
@@ -107,8 +78,7 @@ void Bank::processTransactions(string transaction) {
     Account *b = nullptr;
     bool aExist = accounts.retrieve(idNum1, a);
     bool bExist = accounts.retrieve(idNum2, b);
-    cout << boolalpha <<"check a/bExist " << *a << " and " << bExist << endl;
-    //if a and b are not nullptr
+  
     // then transfer money from idNum1's fund1 to idNum2's fund2
     if (aExist && bExist) {
       a->transfer(amount, b, fund1, fund2);
@@ -141,7 +111,6 @@ void Bank::processTransactions(string transaction) {
     if (!exist) {
       cerr << "ERROR: Could not find Account " << idNum << " Display history cancelled." << endl;
     } else {
-      cout << "inside H check firstname: " << a->getFirstName() << endl;
       a->displayHistory();
     }
   } else if (typeOfFund == 'D') { // D/W 10010 542

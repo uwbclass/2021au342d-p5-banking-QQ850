@@ -9,10 +9,6 @@ typedef struct Node {
     Account *account;
     Node *right;
     Node *left;
-    
-    //add a constructor 
-    Node() : account(nullptr), right(nullptr), left(nullptr) {};
-    Node(Account *account) : account(account), right(nullptr), left(nullptr) {};
   }
   Node;
 
@@ -21,17 +17,13 @@ public:
   // Create BST
   BSTree();
 
-  //copy constructor
-  BSTree(const BSTree &other);
-
   // Delete all nodes in BST
   ~BSTree();
-
-  //assignment operator
-  BSTree& operator = (const BSTree &other);
   
   // Insert new account
   bool insert(Account *other);
+
+ // bool insertHelper(Node *&root, Account *other);
 
   // Retrieve account
   // returns true if successful AND *Account points to account

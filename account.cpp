@@ -15,23 +15,6 @@ ostream &operator << (ostream &out, const Account &other) {
   return out;
 }
 
-//operator overloading to compare each account object 
-bool Account::operator < (const Account &other) const { return this->idNum < other.idNum;}
-bool Account::operator > (const Account &other) const { return this->idNum > other.idNum;}
-bool Account::operator == (const Account &other) const { return this->idNum == other.idNum;}
-bool Account::operator != (const Account &other) const { return this->idNum != other.idNum;}
-
-Account& Account::operator = (const Account &other) {
-    this->idNum = other.idNum; 
-    this->firstName = other.firstName;
-    this->lastName = other.lastName;
-    for (int i = 0; i < 10; i++) {
-      this->history[i] = other.history[i];
-      this->balance[i] = other.balance[i];
-    }
-    return *this;
-}
-
 //constructor 
 Account::Account(string firstName, string lastName, int idNum) : firstName(firstName), lastName(lastName), idNum(idNum) {
   //initial balance is 0
@@ -77,7 +60,6 @@ void Account::withdraw(int amount, int fundType)
 // Display the history of all transactions for a client account or for a single fund.
 void Account::displayHistory () {
   //print the name of the client 
-  cout << "in displayHistory(): firstName:  " << firstName << endl; 
   cout << "Displaying Transaction History for " << firstName << " " << lastName << " by fund" << endl;
   //print each transaction history by using for loop 
   for (int i = 0; i < 10; i++) {

@@ -19,6 +19,5 @@ public:
 private:
   BSTree accounts;
   queue<string> transactions;
-  Account *openAccount; 
 };
 #endif // BANK_H

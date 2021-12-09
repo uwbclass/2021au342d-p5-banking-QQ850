@@ -8,18 +8,6 @@
 
 using namespace std;
 
-// enum TYPE {
-//   MONEY_MARKET,
-//   PRIME_MONEY_BOND,
-//   LONG_TERM_BOND,
-//   SHORT_TERM_BOND,
-//   F_INDEX_FUND,
-//   CAPITAL_VALUE_FUND,
-//   GROWTH_EQUITY_FUND, 
-//   GROWTY_INDEX_FUND,
-//   VALUE_FUND,
-//   VALUE_STOCK_INDEX
-// };
 
 class Account {
   //print out a series of history  
@@ -29,17 +17,6 @@ public:
  //constractor 
  Account(string firstName, string lastName, int idNum);
 
- //operator to compare each account object by ID Number
- bool operator < (const Account &other) const;
- bool operator > (const Account &other) const; 
- bool operator == (const Account &other) const;
- bool operator != (const Account &other) const;
- 
-//  //compare Account with int num
-//  bool operator == (const int &num) const;
-//  bool operator > (const int &num) const; 
-
- Account& operator = (const Account &other);
 
 
  //there are five types of transactions 
