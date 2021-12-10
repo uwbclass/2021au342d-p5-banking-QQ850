@@ -5,7 +5,7 @@ Group name:
   BestTeam 
 
 Programmers:
-    Qiqi Hu
+    Qiqi Hu, 
     Reiner Optiz
 
 # Contribution by each person
