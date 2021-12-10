@@ -2,19 +2,18 @@
 #ifndef BANK_H
 #define BANK_H
 
-#include "bstree.h"
 #include "account.h"
-#include <string>
+#include "bstree.h"
 #include <queue>
+#include <string>
 
 using namespace std;
 
 class Bank {
 public:
-  Bank(); //constractor 
-  //~Bank(); //destractor 
+  // Bank(defaualt); // constractor
   void processTransactionFile(const string &fileName);
-  void processTransactions(string transaction);
+  void processTransactions(const string &transaction);
 
 private:
   BSTree accounts;
