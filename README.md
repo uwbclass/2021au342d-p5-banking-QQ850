@@ -14,7 +14,7 @@ Programmers:
 # Data structures used
   Queue and Binary Search Tree
 
-# clang-tidy Error
+# clang-tidy Error that cannot fix
 1. constructor does not initialize these fields: balance     [cppcoreguidelines-pro-type-member-init,-warnings-as-errors]
 Account::Account(string firstName, string lastName, int idNum)
 ^
