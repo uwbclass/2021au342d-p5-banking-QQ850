@@ -38,16 +38,65 @@ void Account::deposit(int amount, int fundType) {
 // withdraw money which must be less than and equal to current balance in the
 // current fund, else return error
 void Account::withdraw(int amount, int fundType) {
-  stringstream his;
-  his << "W " << idNum << fundType << " " << amount;
+  stringstream hisFromGivenFund;
+  hisFromGivenFund << "W " << idNum << fundType;
 
   // check if given amount is greater then current balance at current fund
   if (amount > balance[fundType]) {
-    // report the failed history then return
-    history[fundType].push_back(his.str() + " (Failed)");
-    // print out error
-    // cerr << "ERROR: Not enough balance in current fund" << fund[fundType] <<
-    // endl;
+    int partial = amount - balance[fundType];
+    bool evenFundType = (fundType % 2 == 0);
+
+    // one exception, if you are withdrawing from a money market fund with
+    // insufficient dollars and it can be covered with dollars from the other
+    // money market fund owned by the client account
+    // 0 and 1, 2 and 3, 4 and 5, 6 and 7, 8 and 9
+    stringstream reportTotalAmount;
+    reportTotalAmount << " and total withdraw amount: " << amount;
+
+    stringstream hisFromAssociatedFund;
+
+    if (evenFundType && (partial <= balance[fundType + 1])) {
+      // report the history from given fund
+      hisFromGivenFund << " " << balance[fundType];
+      hisFromAssociatedFund
+          << "W " << idNum << fundType + 1 << " "
+          << partial; // report the history from associated fund
+
+      // withdraw money from both fund
+      balance[fundType] = 0;
+      balance[fundType + 1] -= partial;
+
+      // report history
+      history[fundType].push_back(
+          hisFromGivenFund.str() + " (withdraw partial from " +
+          getNameOfFund(fundType + 1) + reportTotalAmount.str() + ")");
+      history[fundType + 1].push_back(
+          hisFromAssociatedFund.str() + " (withdraw partial for " +
+          getNameOfFund(fundType) + reportTotalAmount.str() + ")");
+
+    } else if (!evenFundType && (partial <= balance[fundType - 1])) {
+      hisFromGivenFund << " " << balance[fundType];
+      hisFromAssociatedFund << "W " << idNum << fundType - 1 << " " << partial;
+
+      // withdraw money from both fund
+      balance[fundType] = 0;
+      balance[fundType - 1] -= partial;
+
+      // report history
+      history[fundType].push_back(
+          hisFromGivenFund.str() + " (withdraw partial from " +
+          getNameOfFund(fundType - 1) + reportTotalAmount.str() + ")");
+      history[fundType - 1].push_back(
+          hisFromAssociatedFund.str() + " (withdraw partial for " +
+          getNameOfFund(fundType) + reportTotalAmount.str() + ")");
+
+    } else if ((evenFundType && (partial > balance[fundType + 1])) ||
+               (!evenFundType && (partial > balance[fundType - 1]))) {
+      hisFromGivenFund << " " << amount;
+      // report the failed history then return
+      history[fundType].push_back(hisFromGivenFund.str() + " (Failed)");
+    }
+
     return;
   }
 
@@ -55,7 +104,8 @@ void Account::withdraw(int amount, int fundType) {
   balance[fundType] -= amount;
 
   // report the successful history
-  history[fundType].push_back(his.str());
+  hisFromGivenFund << " " << amount;
+  history[fundType].push_back(hisFromGivenFund.str());
 }
 
 // Display the history of all transactions for a client account or for a single
@@ -75,22 +125,87 @@ void Account::displayHistory() {
 // also check it has enough amount in the fund to be able to transfer
 void Account::transfer(int amount, Account *otherAccount, int typeOfFund1,
                        int typeOfFund2) {
-  stringstream his;
-  his << "T " << idNum << typeOfFund1 << " " << amount
-      << otherAccount->getIDNum() << typeOfFund2;
+  stringstream hisFromGivenFund;
+  hisFromGivenFund << "T " << idNum << typeOfFund1;
 
   // assuming otherAccount alway exists since we have checked in bank.cpp
   // before calling transfer(...) function
-  // check and print put errors
+  // check and print errors
   if (balance[typeOfFund1] < amount) {
-    // report error
-    history[typeOfFund1].push_back(his.str() + " (Failed)");
+    // transfer partial from associated fund
+    stringstream reportTotalAmount;
+    reportTotalAmount << " and total transfer amount: " << amount;
+
+    stringstream hisFromAssociatedFund;
+
+    int partial = amount - balance[typeOfFund1];
+    bool evenFundType = (typeOfFund1 % 2 == 0);
+
+    if (evenFundType && (partial <= balance[typeOfFund1 + 1])) {
+
+      hisFromGivenFund << " " << balance[typeOfFund1]
+                       << otherAccount->getIDNum()
+                       << typeOfFund2; // report the history from given fund
+      hisFromAssociatedFund
+          << "T " << idNum << typeOfFund1 + 1 << " " << partial
+          << otherAccount->getIDNum()
+          << typeOfFund2; // report the history from associated fund
+
+      // withdraw money from both fund
+      balance[typeOfFund1] = 0;
+      balance[typeOfFund1 + 1] -= partial;
+
+      // report history
+      history[typeOfFund1].push_back(
+          hisFromGivenFund.str() + " (transfer partial from " +
+          getNameOfFund(typeOfFund1 + 1) + reportTotalAmount.str() + ")");
+      history[typeOfFund1 + 1].push_back(
+          hisFromAssociatedFund.str() + " (transfer partial for " +
+          getNameOfFund(typeOfFund1) + reportTotalAmount.str() + ")");
+
+      // report history for other account as deposit
+      otherAccount->deposit(amount, typeOfFund2);
+
+    } else if (!evenFundType && (partial <= balance[typeOfFund1 - 1])) {
+      hisFromGivenFund << " " << balance[typeOfFund1]
+                       << otherAccount->getIDNum()
+                       << typeOfFund2; // report the history from given fund
+      hisFromAssociatedFund
+          << "T " << idNum << typeOfFund1 - 1 << " " << partial
+          << otherAccount->getIDNum()
+          << typeOfFund2; // report the history from associated fund
+
+      // withdraw money from both fund
+      balance[typeOfFund1] = 0;
+      balance[typeOfFund1 - 1] -= partial;
+
+      // report history
+      history[typeOfFund1].push_back(
+          hisFromGivenFund.str() + " (transfer partial from " +
+          getNameOfFund(typeOfFund1 - 1) + reportTotalAmount.str() + ")");
+      history[typeOfFund1 - 1].push_back(
+          hisFromAssociatedFund.str() + " (transfer partial for " +
+          getNameOfFund(typeOfFund1) + reportTotalAmount.str() + ")");
+
+      // report history for other account as deposit
+      otherAccount->deposit(amount, typeOfFund2);
+
+    } else if ((evenFundType && (partial > balance[typeOfFund1 + 1])) ||
+               (!evenFundType && (partial > balance[typeOfFund1 - 1]))) {
+      // report error
+      hisFromGivenFund << " " << amount << otherAccount->getIDNum()
+                       << typeOfFund2;
+      history[typeOfFund1].push_back(hisFromGivenFund.str() + " (Failed)");
+    }
+
   } else {
     // else extrace amount from fund1 to other account's fund
     balance[typeOfFund1] -= amount;
+    hisFromGivenFund << " " << amount << otherAccount->getIDNum()
+                     << typeOfFund2;
 
     // report history for current account
-    history[typeOfFund1].push_back(his.str());
+    history[typeOfFund1].push_back(hisFromGivenFund.str());
 
     // report history for other account as deposit
     otherAccount->deposit(amount, typeOfFund2);
