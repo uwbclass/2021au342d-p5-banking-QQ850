@@ -143,11 +143,11 @@ void Account::transfer(int amount, Account *otherAccount, int typeOfFund1,
 
     if (evenFundType && (partial <= balance[typeOfFund1 + 1])) {
 
-      hisFromGivenFund << " " << balance[typeOfFund1]
+      hisFromGivenFund << " " << balance[typeOfFund1] << " "
                        << otherAccount->getIDNum()
                        << typeOfFund2; // report the history from given fund
       hisFromAssociatedFund
-          << "T " << idNum << typeOfFund1 + 1 << " " << partial
+          << "T " << idNum << typeOfFund1 + 1 << " " << partial << " "
           << otherAccount->getIDNum()
           << typeOfFund2; // report the history from associated fund
 
@@ -167,11 +167,11 @@ void Account::transfer(int amount, Account *otherAccount, int typeOfFund1,
       otherAccount->deposit(amount, typeOfFund2);
 
     } else if (!evenFundType && (partial <= balance[typeOfFund1 - 1])) {
-      hisFromGivenFund << " " << balance[typeOfFund1]
+      hisFromGivenFund << " " << balance[typeOfFund1] << " "
                        << otherAccount->getIDNum()
                        << typeOfFund2; // report the history from given fund
       hisFromAssociatedFund
-          << "T " << idNum << typeOfFund1 - 1 << " " << partial
+          << "T " << idNum << typeOfFund1 - 1 << " " << partial << " "
           << otherAccount->getIDNum()
           << typeOfFund2; // report the history from associated fund
 
@@ -193,7 +193,7 @@ void Account::transfer(int amount, Account *otherAccount, int typeOfFund1,
     } else if ((evenFundType && (partial > balance[typeOfFund1 + 1])) ||
                (!evenFundType && (partial > balance[typeOfFund1 - 1]))) {
       // report error
-      hisFromGivenFund << " " << amount << otherAccount->getIDNum()
+      hisFromGivenFund << " " << amount << " " << otherAccount->getIDNum()
                        << typeOfFund2;
       history[typeOfFund1].push_back(hisFromGivenFund.str() + " (Failed)");
     }
@@ -201,7 +201,7 @@ void Account::transfer(int amount, Account *otherAccount, int typeOfFund1,
   } else {
     // else extrace amount from fund1 to other account's fund
     balance[typeOfFund1] -= amount;
-    hisFromGivenFund << " " << amount << otherAccount->getIDNum()
+    hisFromGivenFund << " " << amount << " " << otherAccount->getIDNum()
                      << typeOfFund2;
 
     // report history for current account
