@@ -49,23 +49,28 @@ void Bank::processTransactions(const string &transaction) {
   // using stringstring to get each word/number from a string
   stringstream ss(transaction);
   char typeOfFund;
+  int idNum1;
+  string firstName;
+  string lastName;
+  int amount;
+  int idNum2;
+  string num;
+  int idNumFund;
+
   ss >> typeOfFund;
 
   // determine the type and process the transaction differently
   if (typeOfFund == 'O') {
-    string firstName, lastName;           // get the last name and first name
-    int idNum;                            // get the ID number
-    ss >> firstName >> lastName >> idNum; // input the value to the variables
-    Account *openAccount = new Account(firstName, lastName, idNum);
+    ss >> firstName >> lastName >> idNum1; // input the value to the variables
+    Account *openAccount = new Account(firstName, lastName, idNum1);
     bool exist = accounts.insert(openAccount); // insert the account to the tree
 
     // if failed insertion then retrun error
     if (!exist) {
-      cerr << "ERROR: Account " << idNum
+      cerr << "ERROR: Account " << idNum1
            << " is already open. Transaction refused." << endl;
     }
   } else if (typeOfFund == 'T') {
-    int idNum1, amount, idNum2;
     ss >> idNum1 >> amount >> idNum2;
 
     // to separate idNum and fund
@@ -94,25 +99,24 @@ void Bank::processTransactions(const string &transaction) {
   } else if (typeOfFund == 'H') {
     // ex:  H 1001 or H 10010 -> 2 cases
     // get number first
-    string num;
     ss >> num;
 
     // determine the length to see if it contaion a type of fund
-    int idNum, fund = -1;
+    int idNum1, fund = -1;
     if (num.length() == 4) {
-      idNum = stoi(num); // no fund
+      idNum1 = stoi(num); // no fund
     } else {
-      fund = stoi(num) % 10;  // get fund
-      idNum = stoi(num) / 10; // get idNUm
+      fund = stoi(num) % 10;   // get fund
+      idNum1 = stoi(num) / 10; // get idNUm
     }
 
     // check if account exist
     Account *a = nullptr;
-    bool exist = accounts.retrieve(idNum, a);
+    bool exist = accounts.retrieve(idNum1, a);
 
     // if a is not nullptr then display the history
     if (!exist) {
-      cerr << "ERROR: Could not find Account " << idNum
+      cerr << "ERROR: Could not find Account " << idNum1
            << " Display history cancelled." << endl;
     } else {
       if (num.length() == 4) {
@@ -125,11 +129,10 @@ void Bank::processTransactions(const string &transaction) {
       }
     }
   } else if (typeOfFund == 'D') { // D/W 10010 542
-    int num, amount;
-    ss >> num >> amount;
+    ss >> idNumFund >> amount;
 
-    int idNum = num / 10;
-    int fund = num % 10;
+    int idNum = idNumFund / 10;
+    int fund = idNumFund % 10;
 
     Account *a = nullptr;
     bool aExist = accounts.retrieve(idNum, a);
@@ -141,11 +144,10 @@ void Bank::processTransactions(const string &transaction) {
            << endl;
     }
   } else if (typeOfFund == 'W') { // D/W 10010 542
-    int num, amount;
-    ss >> num >> amount;
+    ss >> idNumFund >> amount;
 
-    int idNum = num / 10;
-    int fund = num % 10;
+    int idNum = idNumFund / 10;
+    int fund = idNumFund % 10;
 
     Account *a = nullptr;
     bool aExist = accounts.retrieve(idNum, a);
