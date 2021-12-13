@@ -104,8 +104,8 @@ void BSTree::helper(Node *node) {
   helper(node->right);
   delete node->account;
   delete node;
-  node->account = nullptr;
   node = nullptr;
+  node->account = nullptr;
 }
 
 // check if tree is empty
