@@ -61,7 +61,7 @@ void Bank::processTransactions(const string &transaction) {
 
     // if failed insertion then retrun error
     if (!exist) {
-      cerr << "ERROR: Account " << idNum
+      cout << "ERROR: Account " << idNum
            << " is already open. Transaction refused." << endl;
     }
   } else if (typeOfFund == 'T') {
@@ -85,10 +85,10 @@ void Bank::processTransactions(const string &transaction) {
     if (aExist && bExist) {
       a->transfer(amount, b, fund1, fund2);
     } else if (!aExist) { // check if account1 exists
-      cerr << "ERROR: Could not find Account " << idNum1
+      cout << "ERROR: Could not find Account " << idNum1
            << " Transfer cancelled." << endl;
     } else { // check if account2 exists
-      cerr << "ERROR: Could not find Account " << idNum2
+      cout << "ERROR: Could not find Account " << idNum2
            << " Transfer cancelled." << endl;
     }
   } else if (typeOfFund == 'H') {
@@ -112,7 +112,7 @@ void Bank::processTransactions(const string &transaction) {
 
     // if a is not nullptr then display the history
     if (!exist) {
-      cerr << "ERROR: Could not find Account " << idNum
+      cout << "ERROR: Could not find Account " << idNum
            << " Display history cancelled." << endl;
     } else {
       if (num.length() == 4) {
@@ -137,7 +137,7 @@ void Bank::processTransactions(const string &transaction) {
     if (aExist) {
       a->deposit(amount, fund);
     } else {
-      cerr << "ERROR: Could not find Account " << idNum << " Deposit cancelled."
+      cout << "ERROR: Could not find Account " << idNum << " Deposit cancelled."
            << endl;
     }
   } else if (typeOfFund == 'W') { // D/W 10010 542
@@ -153,7 +153,7 @@ void Bank::processTransactions(const string &transaction) {
     if (aExist) {
       a->withdraw(amount, fund);
     } else {
-      cerr << "ERROR: Could not find Account " << idNum
+      cout << "ERROR: Could not find Account " << idNum
            << " Withdrew cancelled." << endl;
     }
   }

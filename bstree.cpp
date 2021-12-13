@@ -104,6 +104,7 @@ void BSTree::helper(Node *node) {
   helper(node->right);
   delete node->account;
   delete node;
+  node->account = nullptr;
   node = nullptr;
 }
 
