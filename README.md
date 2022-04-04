@@ -1,28 +1,3 @@
-
-// TODO(student)
-
-Group name: 
-  BestTeam 
-
-Programmers:
-    Qiqi Hu, 
-    Reiner Optiz
-
-# Contribution by each person
-  50% for each
-
-# Data structures used
-  Queue and Binary Search Tree
-
-# clang-tidy Error that cannot fix
-1. constructor does not initialize these fields: balance     [cppcoreguidelines-pro-type-member-init,-warnings-as-errors]
-Account::Account(string firstName, string lastName, int idNum)
-^
-
-2. std::move()
-
-3. class 'BSTree' defines a non-default destructor but does not define a copy constructor, a copy assignment operator, a move constructor or a move assignment operator [cppcoreguidelines-special-member-functions,-warnings-as-errors]
-
 # update BankTransIn.txt to be 100% covered
 
 O Cash Johnny 1001
